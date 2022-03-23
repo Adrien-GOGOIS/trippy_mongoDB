@@ -17,8 +17,9 @@ mongoose
     console.log("Connected to Database");
   });
 
-router.get("/", (req, res) => {
-  res.send("WELCOME !!");
+router.get("/", async (req, res) => {
+  const hotels = await Hotel.find().select("-__v0");
+  res.json(hotels);
 });
 
 // router.get("/", async (req, res) => {
@@ -126,35 +127,19 @@ router.get("/", (req, res) => {
 //     res.json(hotel.rows);
 //   });
 
-//   // POST
-//   router.post("/", validateSchema, async (req, res) => {
-//     try {
-//       await Postgres.query(
-//         "INSERT INTO hotels(name, address, city, country, stars, hasSpa, hasPool, priceCategory) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
-//         [
-//           req.body.name,
-//           req.body.address,
-//           req.body.city,
-//           req.body.country,
-//           req.body.stars,
-//           req.body.hasSpa,
-//           req.body.hasPool,
-//           req.body.priceCategory,
-//         ]
-//       );
-//       res.json({
-//         message: "Ajout de l'hôtel " + req.body.name,
-//       });
-//     } catch (err) {
-//       res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-
-//     res.json({
-//       message: "Ajout de l'hôtel " + req.body.name,
-//     });
-//   });
+// POST
+router.post("/", async (req, res) => {
+  try {
+    await Hotel.create(req.body);
+    res.status(201).json({
+      message: "Ajout de l'hôtel " + req.body.name,
+    });
+  } catch (err) {
+    res.status(400).json({
+      message: "An error happened",
+    });
+  }
+});
 
 //   router.post("/:id/comments/", validateComment, (req, res) => {
 //     const hotel = hotels.find((host) => {
