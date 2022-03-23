@@ -3,8 +3,6 @@ const app = express();
 
 app.use(express.json());
 
-const Hotel = require("./models/hotelModel");
-
 const dotenv = require("dotenv");
 dotenv.config({
   path: "./config.env",
