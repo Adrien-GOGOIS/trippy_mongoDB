@@ -18,69 +18,32 @@ mongoose
   });
 
 router.get("/", async (req, res) => {
-  const hotels = await Hotel.find(req.query).select("-__v0");
-  res.json(hotels);
+  try {
+    const hotels = await Hotel.find(req.query).select("-__v0");
+    res.json(hotels);
+
+    if (hotels.length === 0) {
+      return res.send("Désolé, aucun hôtel ne correspond à cette recherche");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: "An error happened",
+    });
+  }
 });
 
-// router.get("/", async (req, res) => {
-//     const queryKeys = Object.keys(req.query);
-//     const dataBaseInstruction = "SELECT * FROM hotels";
-//     let dataBaseInstruction2 =
-//       dataBaseInstruction +
-//       " WHERE " +
-//       queryKeys[0] +
-//       "='" +
-//       req.query[queryKeys[0]].toString().toLowerCase() +
-//       "'";
-
-//     try {
-//       if (Object.keys(req.query).length === 0) {
-//         hotel = await Postgres.query(dataBaseInstruction);
-//       } else if (Object.keys(req.query).length === 1) {
-//         hotel = await Postgres.query(dataBaseInstruction2);
-//       } else {
-//         for (i = 1; i < queryKeys.length; i++) {
-//           dataBaseInstruction2 =
-//             dataBaseInstruction2 +
-//             " AND " +
-//             queryKeys[i] +
-//             "='" +
-//             req.query[queryKeys[i]].toString().toLowerCase() +
-//             "'";
-//         }
-//         hotel = await Postgres.query(dataBaseInstruction2);
-//       }
-
-//       if (hotel.rows.length === 0) {
-//         return res.send("Désolé, aucun hôtel ne correspond à cette recherche");
-//       }
-
-//       res.json(hotel.rows);
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-//   });
-
-//   router.get("/:id", async (req, res) => {
-//     try {
-//       hotel = await Postgres.query("SELECT * FROM hotels WHERE hotel_id=$1", [
-//         req.params.id,
-//       ]);
-//       res.json(hotel.rows);
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-
-//     // const copyHotel = { ...hotel };
-//     // copyHotel.comments = copyHotel.comments.slice(0, 3);
-//     // res.json(copyHotel);
-//   });
+router.get("/:id", async (req, res) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id).select("-__v0");
+    res.json(hotel);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: "An error happened",
+    });
+  }
+});
 
 //   router.get("/:id/comments/", (req, res) => {
 //     const hotel = hotels.find((host) => {
