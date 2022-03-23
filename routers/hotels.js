@@ -18,7 +18,7 @@ mongoose
   });
 
 router.get("/", async (req, res) => {
-  const hotels = await Hotel.find().select("-__v0");
+  const hotels = await Hotel.find(req.query).select("-__v0");
   res.json(hotels);
 });
 
