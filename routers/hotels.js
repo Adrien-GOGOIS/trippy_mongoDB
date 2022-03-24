@@ -55,7 +55,7 @@ router.get("/:id", async (req, res) => {
 
   router.get("/countries/:country", async (req, res) => {
     try {
-      hotel = await Hotel.findOne({country: req.params.country});
+      const hotel = await Hotel.findOne({country: req.params.country});
       res.json(hotel);
     } catch (err) {
       console.log(err);
@@ -67,7 +67,7 @@ router.get("/:id", async (req, res) => {
 
   router.get("/prices/:price", async (req, res) => {
     try {
-      hotel = await Hotel.findOne({priceCategory: req.params.price});
+      const hotel = await Hotel.findOne({priceCategory: req.params.price});
       res.json(hotel);
     } catch (err) {
       console.log(err);
@@ -79,7 +79,7 @@ router.get("/:id", async (req, res) => {
 
   router.get("/spa/pool", async (_req, res) => {
     try {
-      hotels = await Hotel.find({hasSpa: true, hasPool: true})
+      const hotels = await Hotel.find({hasSpa: true, hasPool: true})
       res.json(hotels);
     } catch (err) {
       console.log(err);
@@ -138,22 +138,19 @@ router.post("/", async (req, res) => {
 //   });
 
 //   // DELETE
-//   router.delete("/:id", async (req, res) => {
-//     try {
-//       hotel = await Postgres.query("DELETE FROM hotels WHERE hotel_id=$1", [
-//         req.params.id,
-//       ]);
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-
-//     res.json({
-//       message: "L'hôtel n°" + req.params.id + " a été supprimé",
-//     });
-//   });
+  router.delete("/:id", async (req, res) => {
+    try {
+      const hotel = await Hotel.findByIdAndDelete(req.params.id);
+      res.json({
+        message: "L'hôtel sélectionné a été supprimé",
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
 // On exporte le router
 module.exports = router;
