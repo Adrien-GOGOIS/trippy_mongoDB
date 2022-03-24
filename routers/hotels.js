@@ -53,20 +53,17 @@ router.get("/:id", async (req, res) => {
 //     res.json(hotel.comments);
 //   });
 
-//   router.get("/countries/:country", async (req, res) => {
-//     try {
-//       hotel = await Postgres.query(
-//         "SELECT * FROM hotels WHERE LOWER(country)=$1",
-//         [req.params.country.toLowerCase()]
-//       );
-//       res.json(hotel.rows);
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-//   });
+  router.get("/countries/:country", async (req, res) => {
+    try {
+      hotel = await Hotel.findOne({country: req.params.country});
+      res.json(hotel);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
   router.get("/prices/:price", async (req, res) => {
     try {
