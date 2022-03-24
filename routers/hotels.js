@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 
 const Hotel = require("../models/hotelModel");
+const Comment = require("../models/commentModel");
 
 const dotenv = require("dotenv");
 dotenv.config({
@@ -102,29 +103,38 @@ router.post("/", async (req, res) => {
   }
 });
 
-//   router.post("/:id/comments/", validateComment, (req, res) => {
-//     const hotel = hotels.find((host) => {
-//       return host.id.toString() === req.params.id;
-//     });
+  router.post("/:id/comments/", async (req, res) => {
 
-//     hotel.comments.push({
-//       commentId: uuidv4(),
-//       username: req.body.username,
-//       text: req.body.text,
-//     });
+    try {
+      const hotel = await Hotel.findById(req.params.id).select("-__v0");
+      if (hotel) {
+        await Comment.create({
+          content: req.body.content,
+          hotel_id: req.params.id,
+        });
+        res.status(201).json({
+          message: "Ajout du commentaire"
+        });
+      } else {
+        res.json({
+          message: "Cet hôtel n'existe pas"
+        })
+      }
 
-//     res.json({
-//       message: "Ajout du commentaire de " + req.body.username,
-//       commentaire: hotel.comments,
-//     });
-//   });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
 //   // PATCH
   router.patch("/:id", async (req, res) => {
     try {
-      const hotel = await Hotel.findByIdAndUpdate(req.params.id, {name: req.body.name});
+      await Hotel.findByIdAndUpdate(req.params.id, {name: req.body.name});
       res.json({
-        description: "Mise à jour de l'hôtel n°" + req.params.id,
+        message: "Mise à jour de l'hôtel n°" + req.params.id
       });
     } catch (err) {
       console.log(err);
@@ -137,7 +147,7 @@ router.post("/", async (req, res) => {
 //   // DELETE
   router.delete("/:id", async (req, res) => {
     try {
-      const hotel = await Hotel.findByIdAndDelete(req.params.id);
+      await Hotel.findByIdAndDelete(req.params.id);
       res.json({
         message: "L'hôtel sélectionné a été supprimé",
       });
