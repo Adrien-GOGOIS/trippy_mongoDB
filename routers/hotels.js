@@ -68,27 +68,28 @@ router.get("/:id", async (req, res) => {
 //     }
 //   });
 
-//   router.get("/prices/:price", async (req, res) => {
-//     try {
-//       hotel = await Postgres.query(
-//         "SELECT * FROM hotels WHERE priceCategory=$1",
-//         [req.params.price]
-//       );
-//       res.json(hotel.rows);
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-//   });
+  router.get("/prices/:price", async (req, res) => {
+    try {
+      hotel = await Hotel.findOne({priceCategory: req.params.price});
+      res.json(hotel);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
-//   router.get("/spa/pool", async (_req, res) => {
-//     hotel = await Postgres.query(
-//       "SELECT * FROM hotels WHERE hasPool=TRUE AND hasSpa=TRUE"
-//     );
-//     res.json(hotel.rows);
-//   });
+  router.get("/spa/pool", async (_req, res) => {
+    try {
+      hotels = await Hotel.find({hasSpa: true, hasPool: true})
+      res.json(hotels);
+    } catch (err) {
+      console.log(err);
+      res.json({message: "An error happened"})
+    }
+
+  });
 
 // POST
 router.post("/", async (req, res) => {
