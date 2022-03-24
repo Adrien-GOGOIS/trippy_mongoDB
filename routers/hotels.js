@@ -46,13 +46,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//   router.get("/:id/comments/", (req, res) => {
-//     const hotel = hotels.find((host) => {
-//       return host.id.toString() === req.params.id;
-//     });
-
-//     res.json(hotel.comments);
-//   });
+  router.get("/:id/comments/", async(req, res) => {
+    try {
+      const hotel = await Hotel.findById(req.params.id);
+      const hotelComment = await Comment.findOne({ hotel_id: hotel._id}).select("content");
+      res.json(hotelComment);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
   router.get("/countries/:country", async (req, res) => {
     try {
