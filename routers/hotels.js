@@ -120,22 +120,19 @@ router.post("/", async (req, res) => {
 //   });
 
 //   // PATCH
-//   router.patch("/:id", async (req, res) => {
-//     try {
-//       hotel = await Postgres.query(
-//         "UPDATE hotels SET name=$1 WHERE hotel_id=$2",
-//         [req.body.name, req.params.id]
-//       );
-//       res.json({
-//         description: "Mise à jour de l'hôtel n°" + req.params.id,
-//       });
-//     } catch (err) {
-//       console.log(err);
-//       return res.status(400).json({
-//         message: "An error happened",
-//       });
-//     }
-//   });
+  router.patch("/:id", async (req, res) => {
+    try {
+      const hotel = await Hotel.findByIdAndUpdate(req.params.id, {name: req.body.name});
+      res.json({
+        description: "Mise à jour de l'hôtel n°" + req.params.id,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        message: "An error happened",
+      });
+    }
+  });
 
 //   // DELETE
   router.delete("/:id", async (req, res) => {
